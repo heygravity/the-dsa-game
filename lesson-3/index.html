@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SortSaga - Learn Selection Sort</title>
+    <title>SortSaga - Learn Insertion Sort</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,26 +19,32 @@
             <div class="header-center">
                 <h1>SortSaga</h1>
             </div>
-            <div class="header-right"></div> <!-- Spacer -->
+            <div class="header-right"></div>
         </div>
     </header>
 
     <main>
         <div class="main-layout">
             <div class="lesson-notes">
-                <h2 class="text-2xl font-bold mb-4">Lesson: Selection Sort</h2>
-                <p><b>Selection Sort</b> improves on Bubble Sort by reducing the number of swaps. It works by dividing the list into a sorted and an unsorted sub-list.</p>
+                <h2 class="text-2xl font-bold mb-4">Lesson: Insertion Sort</h2>
+                <p><b>Insertion Sort</b> is an efficient algorithm for sorting a small number of elements. It builds the final sorted array one item at a time.</p>
                 <h3 class="text-xl font-bold mb-2">How It Works</h3>
                 <ol class="list-decimal list-inside space-y-2 mb-4">
-                    <li>Find the smallest element in the unsorted portion.</li>
-                    <li>Swap that smallest element with the first element of the unsorted portion.</li>
-                    <li>Move the boundary of the sorted sub-list one element to the right.</li>
-                    <li>Repeat until the entire list is sorted.</li>
+                    <li>Start with the second element (the "key").</li>
+                    <li>Compare the key to the elements before it.</li>
+                    <li>Shift larger elements one position to the right to make space.</li>
+                    <li>Insert the key into its correct sorted position.</li>
                 </ol>
                 <h4 class="text-lg font-bold mb-2">The Logic in Code</h4>
-                <pre><code>for i from 0 to list.length-1:
-  minIndex = findMinIndex(list, from=i)
-  swap(list[i], list[minIndex])</code></pre>
+                <pre><code>for i from 1 to list.length-1:
+  key = list[i]
+  j = i - 1
+  while (j >= 0 and list[j] > key) {
+    list[j+1] = list[j] // Shift
+    j = j - 1
+  }
+  list[j+1] = key // Insert
+</code></pre>
             </div>
 
             <div class="game-area">
@@ -50,13 +56,10 @@
                         <button id="hint-btn">Hint</button>
                         <span>Moves: <span id="moves-count">0</span></span>
                     </div>
-                    <div id="game-container">
-                        <!-- Bars are generated here by JavaScript -->
-                    </div>
-                    <!-- Win Message is now inside the game container -->
-                    <div id="congrats-message" class="congrats-message">
-                        <h3 class="font-bold text-lg">Excellent! 🎉</h3>
-                        <p>You've successfully performed a Selection Sort!</p>
+                    <div id="game-container"></div>
+                     <div id="congrats-message" class="congrats-message">
+                        <h3>Excellent! 🎉</h3>
+                        <p>You've mastered Insertion Sort!</p>
                     </div>
                 </div>
             </div>
@@ -69,7 +72,7 @@
 
     <footer>
         <div class="footer-container">
-            <div class="footer-left">Lesson: Selection Sort Algorithm</div>
+            <div class="footer-left">Lesson: Insertion Sort Algorithm</div>
             <div class="footer-center">Pritish Rajpurohit</div>
             <div class="footer-right">Copyright &copy; <span id="copyright-year"></span></div>
         </div>
@@ -78,4 +81,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-

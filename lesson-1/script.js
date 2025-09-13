@@ -92,8 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isSorted) {
             isGameWon = true;
-            winSound.play();
-            // Trigger win animation
             bars.forEach((bar, index) => {
                 setTimeout(() => bar.classList.add('dance'), index * 100);
             });
@@ -127,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resetButton.addEventListener('click', createBars);
     hintButton.addEventListener('click', getHint);
     nextLessonButton.addEventListener('click', () => {
-        alert('The next lesson is coming soon!');
+    window.location.href = '../lesson-2/index.html';
     });
     
     // Set current year in footer
