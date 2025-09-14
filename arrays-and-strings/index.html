@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The DSA Games - Arrays & Strings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #1f2937; /* Dark gray text */
+        }
+        .game-title {
+            font-family: 'Press Start 2P', cursive;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .array-block {
+            animation: popIn 0.5s ease-out forwards;
+        }
+        .selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.7); /* Yellow shadow */
+            border-color: #fde68a; /* A light yellow border */
+        }
+        .hint {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
+            }
+        }
+        @keyframes tada {
+            from { transform: scale3d(1, 1, 1); }
+            10%, 20% { transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg); }
+            30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+            40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+            to { transform: scale3d(1, 1, 1); }
+        }
+        .animate-tada {
+            display: inline-block;
+            animation: tada 1.5s ease-in-out;
+            animation-delay: 0.8s;
+        }
+        .code-snippet {
+            background-color: #e5e7eb; /* Lighter background for code */
+            border-left: 3px solid #3B82F6;
+            color: #111827; /* Dark text for code */
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #3B82F6;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="w-full py-4 bg-white/50 backdrop-blur-sm shadow-lg animate-fade-in">
+        <div class="container mx-auto px-4 relative flex items-center justify-center h-12">
+            <div class="absolute left-4 md:left-8 flex items-center">
+                 <a href="../index.html" title="Home" class="text-blue-600 hover:text-blue-800 transition-transform transform hover:scale-110">
+                    <span class="material-icons-outlined" style="font-size: 36px;">home</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl game-title text-blue-600 text-center">The DSA Games</h1>
+            <div class="absolute right-4 md:right-8 flex items-center">
+                 <a href="https://github.com/smashcoder" target="_blank" rel="noopener noreferrer" title="GitHub" class="text-gray-800 hover:text-black transition-transform transform hover:scale-110">
+                    <span class="material-icons-outlined" style="font-size: 36px;">code</span>
+                 </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+            
+            <div class="bg-white p-6 rounded-lg shadow-xl animate-fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-bold mb-4 text-blue-600">Arrays & Strings: The Building Blocks <span class="animate-tada">🧱</span></h2>
+                <div class="space-y-4 text-gray-700">
+                    <p>Arrays are fundamental data structures that store a collection of elements, like a list of numbers or names, in a single, contiguous block of memory. This allows for quick access to any element by its index (position).</p>
+                    <p>Strings are essentially specialized arrays of characters, used to store and manipulate text.</p>
+                    
+                    <h3 class="text-xl font-semibold pt-4 text-blue-600">Core Operations <span class="animate-tada">⚙️</span></h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Access:</strong> <span class="animate-tada">🔍</span> Retrieve an element at a specific index. This is very fast in arrays.</li>
+                        <li><strong>Insertion:</strong> <span class="animate-tada">➕</span> Add a new element. This can be slow if you need to shift other elements.</li>
+                        <li><strong>Deletion:</strong> <span class="animate-tada">➖</span> Remove an element, which might also require shifting.</li>
+                        <li><strong>Searching:</strong> <span class="animate-tada">🧐</span> Find a specific element within the array.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold pt-4 text-blue-600">Syntax Examples <span class="animate-tada">💻</span></h3>
+                    <div id="syntax-tabs">
+                        <div class="flex border-b border-gray-200 mb-4">
+                            <button data-lang="js" class="tab-btn active py-2 px-4 font-semibold text-sm rounded-t-lg">JavaScript</button>
+                            <button data-lang="python" class="tab-btn py-2 px-4 font-semibold text-sm rounded-t-lg">Python</button>
+                            <button data-lang="java" class="tab-btn py-2 px-4 font-semibold text-sm rounded-t-lg">Java</button>
+                            <button data-lang="cpp" class="tab-btn py-2 px-4 font-semibold text-sm rounded-t-lg">C++</button>
+                            <button data-lang="c" class="tab-btn py-2 px-4 font-semibold text-sm rounded-t-lg">C</button>
+                        </div>
+                        <div class="tab-content" id="js-content">
+                            <pre class="code-snippet p-4 rounded-md overflow-x-auto"><code>// Creating an array
+let scores = [88, 92, 100, 75];
+// Accessing an element
+let highScore = scores[2]; // 100
+// Adding an element
+scores.push(85);</code></pre>
+                        </div>
+                        <div class="tab-content hidden" id="python-content">
+                             <pre class="code-snippet p-4 rounded-md overflow-x-auto"><code># Creating a list (Python's array)
+scores = [88, 92, 100, 75]
+# Accessing an element
+high_score = scores[2] # 100
+# Adding an element
+scores.append(85)</code></pre>
+                        </div>
+                        <div class="tab-content hidden" id="java-content">
+                             <pre class="code-snippet p-4 rounded-md overflow-x-auto"><code>// Creating an array
+int[] scores = {88, 92, 100, 75};
+// Accessing an element
+int highScore = scores[2]; // 100
+// Java arrays have a fixed size.
+// Use ArrayList for dynamic size.
+ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(85);</code></pre>
+                        </div>
+                         <div class="tab-content hidden" id="cpp-content">
+                             <pre class="code-snippet p-4 rounded-md overflow-x-auto"><code>// Creating an array
+int scores[] = {88, 92, 100, 75};
+// Accessing an element
+int highScore = scores[2]; // 100
+// Use std::vector for dynamic size
+std::vector&lt;int&gt; vec;
+vec.push_back(85);</code></pre>
+                        </div>
+                         <div class="tab-content hidden" id="c-content">
+                             <pre class="code-snippet p-4 rounded-md overflow-x-auto"><code>// Creating an array
+int scores[] = {88, 92, 100, 75};
+// Accessing an element
+int highScore = scores[2]; // 100
+// C arrays have a fixed size.
+// Memory must be managed manually
+// for dynamic arrays.</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl flex flex-col animate-fade-in" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-bold mb-2 text-center text-blue-600">Game: Array Sort Challenge <span class="animate-tada">🏆</span></h2>
+                <p class="text-center text-gray-500 mb-4">Click two blocks to swap them. Sort the array in ascending order! <span class="animate-tada">👇</span></p>
+                
+                <div class="relative flex-grow">
+                    <div id="game-board" class="flex-grow bg-gray-100 rounded-lg p-4 flex items-center justify-center gap-2 md:gap-4 min-h-[200px] md:min-h-[300px] transition-opacity duration-500">
+                    </div>
+                    <div id="win-overlay" class="absolute inset-0 bg-black bg-opacity-75 rounded-lg hidden flex-col items-center justify-center text-center p-4">
+                        <h2 class="text-3xl font-bold text-yellow-300 game-title animate-pop-in">Congratulations! <span class="animate-tada">🎉</span></h2>
+                        <p class="text-xl text-white mt-2 animate-pop-in" style="animation-delay: 0.2s;">You've won the game! <span class="animate-tada">🥳</span></p>
+                    </div>
+                </div>
+
+                <div id="status-message" class="text-center h-8 my-4 font-semibold text-lg transition-all duration-300"></div>
+
+                <div class="flex justify-center gap-4 mt-auto">
+                    <button id="hint-btn" class="bg-transparent border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"><span class="material-icons-outlined">lightbulb</span> Hint</button>
+                    <button id="reset-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"><span class="material-icons-outlined">restart_alt</span> Reset</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12">
+            <a href="#" class="w-40 justify-center bg-transparent border-2 border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                <span class="material-icons-outlined">arrow_back</span> Previous
+            </a>
+            <a href="#" class="w-40 justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2 border-2 border-blue-500 hover:border-blue-600">
+                Next <span class="material-icons-outlined">arrow_forward</span>
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-4 bg-gray-200 mt-8">
+        <div class="container mx-auto text-center text-gray-600 text-sm">
+            <p>&copy; 2025 The DSA Game by Pritish Rajpurohit. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameBoard = document.getElementById('game-board');
+            const hintBtn = document.getElementById('hint-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const statusMessage = document.getElementById('status-message');
+            const tabContainer = document.getElementById('syntax-tabs');
+
+            // --- Tab Logic ---
+            const tabs = tabContainer.querySelectorAll('.tab-btn');
+            const contents = tabContainer.querySelectorAll('.tab-content');
+
+            tabContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.tab-btn')) {
+                    const targetLang = e.target.dataset.lang;
+                    
+                    tabs.forEach(tab => {
+                        tab.classList.remove('active');
+                        if(tab.dataset.lang === targetLang) {
+                            tab.classList.add('active');
+                        }
+                    });
+
+                    contents.forEach(content => {
+                        content.classList.add('hidden');
+                        if (content.id === `${targetLang}-content`) {
+                            content.classList.remove('hidden');
+                        }
+                    });
+                }
+            });
+
+
+            const ARRAY_SIZE = 6;
+            let gameArray = [];
+            let sortedArray = [];
+            let selectedIndex = -1;
+            let moves = 0;
+
+            function shuffle(array) {
+                let currentIndex = array.length, randomIndex;
+                while (currentIndex != 0) {
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex--;
+                    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+                }
+                return array;
+            }
+
+            function initGame() {
+                gameArray = Array.from({ length: ARRAY_SIZE }, (_, i) => Math.floor(Math.random() * 90) + 10);
+                sortedArray = [...gameArray].sort((a, b) => a - b);
+                
+                // Ensure the shuffled array is not already sorted
+                while (JSON.stringify(gameArray) === JSON.stringify(sortedArray)) {
+                    gameArray = shuffle([...gameArray]);
+                }
+                
+                // Hide overlay and restore board opacity
+                const overlay = document.getElementById('win-overlay');
+                const board = document.getElementById('game-board');
+                board.style.opacity = '1';
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+
+                selectedIndex = -1;
+                moves = 0;
+                statusMessage.textContent = 'Good luck!';
+                statusMessage.className = 'text-center h-8 my-4 font-semibold text-lg text-blue-600 transition-all duration-300';
+                renderArray();
+            }
+
+            function renderArray() {
+                gameBoard.innerHTML = '';
+                gameArray.forEach((value, index) => {
+                    const block = document.createElement('div');
+                    block.textContent = value;
+                    block.className = 'array-block w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-2xl font-bold bg-blue-500 text-white rounded-lg cursor-pointer transition-all duration-300 ease-in-out shadow-md border-2 border-transparent';
+                    block.style.animationDelay = `${index * 50}ms`;
+                    block.dataset.index = index;
+                    block.addEventListener('click', () => handleBlockClick(index));
+                    gameBoard.appendChild(block);
+                });
+            }
+
+            function handleBlockClick(index) {
+                const blocks = gameBoard.children;
+                // Prevent clicks during the swap animation
+                if (gameBoard.classList.contains('swapping')) return;
+
+                // Clear any hints
+                for(const block of blocks) {
+                    block.classList.remove('hint');
+                }
+
+                if (selectedIndex === -1) {
+                    selectedIndex = index;
+                    blocks[index].classList.add('selected');
+                    blocks[index].classList.remove('bg-blue-500');
+                    blocks[index].classList.add('bg-yellow-500');
+                } else {
+                    if (selectedIndex !== index) {
+                        // Highlight the second block and disable clicks
+                        blocks[index].classList.add('selected');
+                        blocks[index].classList.remove('bg-blue-500');
+                        blocks[index].classList.add('bg-yellow-500');
+                        gameBoard.classList.add('swapping');
+
+                        // Use a timeout to show both selections before swapping
+                        setTimeout(() => {
+                            [gameArray[selectedIndex], gameArray[index]] = [gameArray[index], gameArray[selectedIndex]];
+                            moves++;
+                            
+                            renderArray(); // This will redraw and clear selections
+                            checkWin();
+
+                            selectedIndex = -1;
+                            gameBoard.classList.remove('swapping'); // Re-enable clicks
+                        }, 400);
+                    } else {
+                        // Deselect if clicking the same block
+                         blocks[selectedIndex].classList.remove('selected');
+                         blocks[selectedIndex].classList.remove('bg-yellow-500');
+                         blocks[selectedIndex].classList.add('bg-blue-500');
+                         selectedIndex = -1;
+                    }
+                }
+            }
+
+            function checkWin() {
+                if (JSON.stringify(gameArray) === JSON.stringify(sortedArray)) {
+                    statusMessage.textContent = `Sorted in ${moves} moves! Well done!`;
+                    statusMessage.className = 'text-center h-8 my-4 font-semibold text-lg text-green-600 transition-all duration-300 scale-110';
+                    
+                    const overlay = document.getElementById('win-overlay');
+                    const board = document.getElementById('game-board');
+                    
+                    // Fade out board and show overlay
+                    board.style.opacity = '0.2';
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+                } else {
+                    statusMessage.textContent = `Moves: ${moves}`;
+                }
+            }
+
+            function showHint() {
+                // Simple bubble sort hint: find first pair that is out of order
+                for (let i = 0; i < gameArray.length - 1; i++) {
+                    if (gameArray[i] > gameArray[i+1]) {
+                        const blocks = gameBoard.children;
+                        blocks[i].classList.add('hint');
+                        blocks[i+1].classList.add('hint');
+                        statusMessage.textContent = `Hint: Try swapping ${gameArray[i]} and ${gameArray[i+1]}.`;
+                        return;
+                    }
+                }
+                // If nearly sorted, hint the last incorrect element
+                 for (let i = 0; i < gameArray.length; i++) {
+                    if (gameArray[i] !== sortedArray[i]) {
+                         const correctValue = sortedArray[i];
+                         const correctIndex = gameArray.indexOf(correctValue);
+                         if(correctIndex > -1){
+                            const blocks = gameBoard.children;
+                            blocks[i].classList.add('hint');
+                            blocks[correctIndex].classList.add('hint');
+                            statusMessage.textContent = `Hint: The block at position ${i+1} seems wrong.`;
+                            return;
+                         }
+                    }
+                }
+            }
+
+            resetBtn.addEventListener('click', initGame);
+            hintBtn.addEventListener('click', showHint);
+
+            initGame();
+        });
+    </script>
+</body>
+</html>
