@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +12,6 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f9fafb;
-            color: #1f2937;
         }
         .game-title, #win-message {
             font-family: 'Press Start 2P', cursive;
@@ -67,9 +65,9 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
 
-    <header class="w-full py-4 bg-white/80 backdrop-blur-sm shadow-md sticky top-0 z-10 animate-fade-in">
+    <header class="w-full py-4 bg-white shadow-md sticky top-0 z-10 animate-fade-in">
         <div class="container mx-auto px-4 flex justify-between items-center">
              <a href="index.html" class="text-gray-700 hover:text-blue-500 transition-colors">
                 <span class="material-icons-outlined text-3xl">home</span>
@@ -219,7 +217,7 @@ void push(int val) {
         </div>
     </main>
 
-    <footer class="w-full py-4 bg-gray-200 mt-8">
+    <footer class="w-full py-4 bg-white mt-8 border-t border-gray-200">
         <div class="container mx-auto text-center text-gray-500 text-sm">
             <p>&copy; 2025 The DSA Game by Pritish Rajpurohit. All rights reserved.</p>
         </div>
@@ -227,6 +225,7 @@ void push(int val) {
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- TABS LOGIC ---
             const tabs = document.querySelectorAll('.tab-btn');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -239,6 +238,7 @@ void push(int val) {
                 });
             });
 
+            // --- GAME LOGIC ---
             const addItemBtn = document.getElementById('add-item-btn');
             const processItemBtn = document.getElementById('process-item-btn');
             const modeToggleBtn = document.getElementById('mode-toggle-btn');
@@ -359,17 +359,22 @@ void push(int val) {
 
             modeToggleBtn.addEventListener('click', () => {
                 mode = mode === 'stack' ? 'queue' : 'stack';
-                updateModeUI();
-                render();
+                initGame(); // Reset the game when mode changes to avoid confusion
             });
 
             hintBtn.addEventListener('click', () => {
-                if (structure.length === 0) return;
+                if (structure.length === 0) {
+                    statusMessage.textContent = "Add an item before getting a hint!";
+                    return;
+                };
+
                 let hintItem;
                 if (mode === 'stack') {
                     hintItem = structure[structure.length - 1];
+                    statusMessage.textContent = 'Hint: Stacks are LIFO. The last item in will be processed.';
                 } else {
                     hintItem = structure[0];
+                    statusMessage.textContent = 'Hint: Queues are FIFO. The first item in will be processed.';
                 }
                 const hintEl = document.getElementById(`item-${hintItem.id}`);
                 if (hintEl) {
@@ -384,3 +389,4 @@ void push(int val) {
     </script>
 </body>
 </html>
+
