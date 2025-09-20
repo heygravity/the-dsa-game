@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The DSA Games - Bubble Sort</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .game-title, #win-message {
+            font-family: 'Press Start 2P', cursive;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes tada {
+            from { transform: scale3d(1, 1, 1); }
+            10%, 20% { transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg); }
+            30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+            40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+            to { transform: scale3d(1, 1, 1); }
+        }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        .animate-pop-in { animation: popIn 0.5s ease-out forwards; }
+        .animate-tada { animation: tada 1s ease-out; animation-delay: 0.5s; }
+        .code-snippet {
+            background-color: #f3f4f6;
+            border-left: 3px solid #60a5fa;
+            color: #374151;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .tab-btn { transition: all 0.2s ease-in-out; }
+        .tab-btn.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        .array-block {
+            transition: all 0.3s ease-in-out;
+        }
+        .comparing {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #facc15;
+            box-shadow: 0 0 15px #facc15;
+        }
+        .swapping {
+            background-color: #ef4444 !important;
+            color: white;
+        }
+        .sorted {
+            background-color: #22c55e !important;
+            color: white;
+            border-color: #22c55e;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
+    <header class="w-full py-4 bg-white shadow-md sticky top-0 z-10 animate-fade-in">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+             <a href="index.html" class="text-gray-700 hover:text-blue-500 transition-colors">
+                <span class="material-icons-outlined text-3xl">home</span>
+            </a>
+            <h1 class="text-2xl md:text-3xl game-title text-blue-500 text-center">The DSA Games</h1>
+            <a href="https://github.com" target="_blank" class="text-gray-700 hover:text-blue-500 transition-colors">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+            
+            <div class="bg-white p-6 rounded-lg shadow-xl animate-fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-bold mb-4 text-blue-600 flex items-center gap-2">Basic Sorting: Bubble Sort <span class="animate-tada inline-block">🛁</span></h2>
+                <div class="space-y-4 text-gray-600">
+                    <p>Bubble Sort is one of the simplest sorting algorithms. It works by repeatedly stepping through the list, comparing each pair of adjacent items and swapping them if they are in the wrong order. The pass through the list is repeated until the list is sorted.</p>
+                    
+                    <h3 class="text-xl font-semibold pt-4 text-blue-600 flex items-center gap-2">Core Principles <span class="animate-tada inline-block">📜</span></h3>
+                    <ul class="list-disc list-inside space-y-2 pl-2">
+                        <li><strong>Compare:</strong> Look at two adjacent elements.</li>
+                        <li><strong>Swap:</strong> If the element on the left is greater than the one on the right, swap them.</li>
+                        <li><strong>Repeat:</strong> Move to the next pair and repeat the comparison.</li>
+                        <li><strong>"Bubble Up":</strong> After each full pass, the next largest element "bubbles up" to its correct position at the end of the unsorted portion.</li>
+                        <li><strong>Time Complexity:</strong> O(n²) - not efficient for large datasets, but great for learning!</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold pt-4 text-blue-600">Syntax Examples</h3>
+                    <div>
+                         <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex gap-6" aria-label="Tabs">
+                                <button class="tab-btn active shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="js">JavaScript</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="python">Python</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="java">Java</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="cpp">C++</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="c">C</button>
+                            </nav>
+                        </div>
+                        <div class="mt-4">
+                            <pre id="code-js" class="code-snippet p-4 rounded-md overflow-x-auto"><code>function bubbleSort(arr) {
+  let n = arr.length;
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = 0; j < n - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+      }
+    }
+  }
+  return arr;
+}</code></pre>
+                            <pre id="code-python" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>def bubble_sort(arr):
+  n = len(arr)
+  for i in range(n):
+    for j in range(0, n - i - 1):
+      if arr[j] > arr[j + 1]:
+        arr[j], arr[j + 1] = arr[j + 1], arr[j]
+  return arr</code></pre>
+                            <pre id="code-java" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>void bubbleSort(int arr[]) {
+  int n = arr.length;
+  for (int i = 0; i < n - 1; i++) {
+    for (int j = 0; j < n - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        int temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+}</code></pre>
+                            <pre id="code-cpp" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>void bubbleSort(int arr[], int n) {
+  for (int i = 0; i < n - 1; i++) {
+    for (int j = 0; j < n - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        std::swap(arr[j], arr[j + 1]);
+      }
+    }
+  }
+}</code></pre>
+                            <pre id="code-c" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>void bubbleSort(int arr[], int n) {
+  for (int i = 0; i < n - 1; i++) {
+    for (int j = 0; j < n - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        int temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl flex flex-col animate-fade-in" style="animation-delay: 0.4s;">
+                 <h2 class="text-2xl font-bold mb-2 text-center text-blue-600 flex items-center justify-center gap-2">Game: Bubble Up! <span class="animate-tada inline-block">🫧</span></h2>
+                <p class="text-center text-gray-500 mb-4">For the highlighted pair, decide if they need to be swapped to sort the array in ascending order.</p>
+                
+                <div id="game-board-container" class="flex-grow bg-gray-50 rounded-lg p-4 relative min-h-[300px] md:min-h-[400px]">
+                    <div id="game-board" class="flex items-center justify-center gap-2 md:gap-4 h-full">
+                        <!-- Array blocks go here -->
+                    </div>
+                    <div id="win-message" class="absolute inset-0 bg-green-500/80 rounded-lg flex items-center justify-center text-white text-center p-4 text-2xl font-bold opacity-0 transition-opacity duration-500 pointer-events-none">
+                        Array Sorted! Well Done! 🎉
+                    </div>
+                </div>
+                
+                 <div id="status-message" class="text-center h-8 my-4 font-semibold text-lg text-gray-700 transition-all duration-300"></div>
+
+                <div class="grid grid-cols-2 gap-4 mt-auto">
+                    <button id="swap-btn" class="justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                        <span class="material-icons-outlined">swap_horiz</span> Swap
+                    </button>
+                    <button id="keep-btn" class="justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                        <span class="material-icons-outlined">check_circle_outline</span> Keep
+                    </button>
+                    <button id="hint-btn" class="justify-center bg-transparent border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"><span class="material-icons-outlined">lightbulb</span> Hint</button>
+                    <button id="reset-btn" class="justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"><span class="material-icons-outlined">restart_alt</span> Reset</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12">
+            <a href="stacks_queues_game.html" class="w-40 justify-center bg-transparent border-2 border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                <span class="material-icons-outlined">arrow_back</span> Previous
+            </a>
+            <a href="#" class="w-40 justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2 border-2 border-blue-500 hover:border-blue-600">
+                Next <span class="material-icons-outlined">arrow_forward</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="w-full py-4 bg-white mt-8 border-t border-gray-200">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            <p>&copy; 2025 The DSA Game by Pritish Rajpurohit. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TABS LOGIC ---
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.querySelectorAll('.code-snippet').forEach(snip => {
+                       snip.classList.add('hidden');
+                    });
+                    document.getElementById(`code-${tab.dataset.lang}`).classList.remove('hidden');
+                });
+            });
+
+            // --- GAME LOGIC ---
+            const gameBoard = document.getElementById('game-board');
+            const swapBtn = document.getElementById('swap-btn');
+            const keepBtn = document.getElementById('keep-btn');
+            const hintBtn = document.getElementById('hint-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const statusMessage = document.getElementById('status-message');
+            const winMessage = document.getElementById('win-message');
+
+            const ARRAY_SIZE = 6;
+            let gameArray = [];
+            let i = 0; // Outer loop counter (pass)
+            let j = 0; // Inner loop counter (comparison)
+            let isGameOver = false;
+            let isAnimating = false;
+
+            function initGame() {
+                // Generate a shuffled array of unique numbers
+                const uniqueValues = new Set();
+                while (uniqueValues.size < ARRAY_SIZE) {
+                    uniqueValues.add(Math.floor(Math.random() * 90) + 10);
+                }
+                gameArray = Array.from(uniqueValues);
+                
+                i = 0;
+                j = 0;
+                isGameOver = false;
+                isAnimating = false;
+                winMessage.style.opacity = '0';
+                swapBtn.disabled = false;
+                keepBtn.disabled = false;
+                statusMessage.textContent = "Ready to sort!";
+                renderArray();
+                setTimeout(highlightNextPair, 200);
+            }
+
+            function renderArray() {
+                gameBoard.innerHTML = '';
+                gameArray.forEach((value, index) => {
+                    const block = document.createElement('div');
+                    block.textContent = value;
+                    block.className = 'array-block w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-2xl font-bold bg-gray-200 rounded-lg border-2 border-gray-300';
+                    block.dataset.index = index;
+                    gameBoard.appendChild(block);
+                });
+                updateSortedVisuals();
+            }
+            
+            function updateSortedVisuals() {
+                const blocks = gameBoard.children;
+                for (let k = 0; k < ARRAY_SIZE; k++) {
+                    if (k >= ARRAY_SIZE - i) {
+                        blocks[k].classList.add('sorted');
+                    } else {
+                         blocks[k].classList.remove('sorted');
+                    }
+                }
+            }
+            
+            function highlightNextPair() {
+                if (isGameOver) return;
+                isAnimating = false;
+                const blocks = Array.from(gameBoard.children);
+                blocks.forEach(b => b.classList.remove('comparing', 'swapping'));
+
+                if (i >= ARRAY_SIZE - 1) {
+                    finishGame();
+                    return;
+                }
+                
+                statusMessage.textContent = `Comparing ${gameArray[j]} and ${gameArray[j + 1]}. Swap?`;
+                blocks[j].classList.add('comparing');
+                blocks[j + 1].classList.add('comparing');
+            }
+
+            function handleUserChoice(choseToSwap) {
+                if (isAnimating || isGameOver) return;
+
+                const shouldSwap = gameArray[j] > gameArray[j + 1];
+
+                if (choseToSwap === shouldSwap) {
+                    // Correct choice
+                    isAnimating = true;
+                    if (shouldSwap) {
+                        const blocks = Array.from(gameBoard.children);
+                        blocks[j].classList.add('swapping');
+                        blocks[j + 1].classList.add('swapping');
+                        statusMessage.textContent = `Correct! Swapping...`;
+                        [gameArray[j], gameArray[j + 1]] = [gameArray[j + 1], gameArray[j]];
+                        
+                        setTimeout(() => {
+                            renderArray();
+                            advancePointers();
+                            highlightNextPair();
+                        }, 500);
+                    } else {
+                        statusMessage.textContent = `Correct! No swap needed.`;
+                        advancePointers();
+                        highlightNextPair();
+                    }
+                } else {
+                    // Incorrect choice
+                    statusMessage.textContent = choseToSwap ? "Incorrect! These don't need a swap." : "Incorrect! These should be swapped.";
+                }
+            }
+
+            function advancePointers() {
+                j++;
+                if (j >= ARRAY_SIZE - i - 1) {
+                    j = 0;
+                    i++;
+                    updateSortedVisuals();
+                }
+                 if (i >= ARRAY_SIZE - 1) {
+                    finishGame();
+                }
+            }
+            
+            function finishGame() {
+                isGameOver = true;
+                winMessage.style.opacity = '1';
+                swapBtn.disabled = true;
+                keepBtn.disabled = true;
+                statusMessage.textContent = "Array is fully sorted!";
+                const blocks = Array.from(gameBoard.children);
+                blocks.forEach(b => b.classList.add('sorted'));
+            }
+
+            function showHint() {
+                 if (isGameOver) return;
+                 const shouldSwap = gameArray[j] > gameArray[j+1];
+                 if (shouldSwap) {
+                    statusMessage.textContent = "Hint: The left value is larger. A swap is needed!";
+                 } else {
+                    statusMessage.textContent = "Hint: The values are in order. No swap needed!";
+                 }
+            }
+
+            swapBtn.addEventListener('click', () => handleUserChoice(true));
+            keepBtn.addEventListener('click', () => handleUserChoice(false));
+            resetBtn.addEventListener('click', initGame);
+            hintBtn.addEventListener('click', showHint);
+
+            initGame();
+        });
+    </script>
+</body>
+</html>
+
