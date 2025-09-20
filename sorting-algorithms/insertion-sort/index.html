@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The DSA Games - Insertion Sort</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .game-title, #win-message {
+            font-family: 'Press Start 2P', cursive;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes tada {
+            from { transform: scale3d(1, 1, 1); }
+            10%, 20% { transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg); }
+            30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+            40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+            to { transform: scale3d(1, 1, 1); }
+        }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        .animate-pop-in { animation: popIn 0.5s ease-out forwards; }
+        .animate-tada { animation: tada 1s ease-out; animation-delay: 0.5s; }
+        .code-snippet {
+            background-color: #f3f4f6;
+            border-left: 3px solid #60a5fa;
+            color: #374151;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .tab-btn { transition: all 0.2s ease-in-out; }
+        .tab-btn.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        .array-block {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .key-element {
+            border-color: #facc15;
+            box-shadow: 0 0 15px #facc15;
+            transform: translateY(-20px) scale(1.1);
+            background-color: #fef9c3;
+        }
+        .target-slot {
+             background-color: #dbeafe;
+             border-color: #60a5fa;
+             box-shadow: 0 0 15px #60a5fa;
+             cursor: pointer;
+        }
+        .sorted {
+            background-color: #22c55e !important;
+            color: white;
+            border-color: #22c55e;
+            cursor: default;
+        }
+        .incorrect {
+            animation: shake 0.5s;
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
+    <header class="w-full py-4 bg-white shadow-md sticky top-0 z-10 animate-fade-in">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+             <a href="index.html" class="text-gray-700 hover:text-blue-500 transition-colors">
+                <span class="material-icons-outlined text-3xl">home</span>
+            </a>
+            <h1 class="text-2xl md:text-3xl game-title text-blue-500 text-center">The DSA Games</h1>
+            <a href="https://github.com" target="_blank" class="text-gray-700 hover:text-blue-500 transition-colors">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+            
+            <div class="bg-white p-6 rounded-lg shadow-xl animate-fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-bold mb-4 text-blue-600 flex items-center gap-2">Basic Sorting: Insertion Sort <span class="animate-tada inline-block">➡️</span></h2>
+                <div class="space-y-4 text-gray-600">
+                    <p>Insertion Sort builds the final sorted array one item at a time. It iterates through an input array and removes one element per iteration, finds the place the element belongs in the sorted part of the array, and inserts it there.</p>
+                    
+                    <h3 class="text-xl font-semibold pt-4 text-blue-600 flex items-center gap-2">Core Principles <span class="animate-tada inline-block">🧩</span></h3>
+                    <ul class="list-disc list-inside space-y-2 pl-2">
+                        <li><strong>Take an Element:</strong> Pick the next unsorted element (the "key").</li>
+                        <li><strong>Find Position:</strong> Compare the key with elements in the sorted part (from right to left) to find its correct insertion point.</li>
+                        <li><strong>Shift:</strong> Shift all the sorted elements greater than the key one position to the right.</li>
+                        <li><strong>Insert:</strong> Place the key into the newly opened space.</li>
+                        <li><strong>Time Complexity:</strong> O(n²) in the average and worst case, but it's very efficient for small or nearly-sorted datasets.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold pt-4 text-blue-600">Syntax Examples</h3>
+                    <div>
+                         <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex gap-6" aria-label="Tabs">
+                                <button class="tab-btn active shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="js">JavaScript</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="python">Python</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="java">Java</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="cpp">C++</button>
+                                <button class="tab-btn shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-lang="c">C</button>
+                            </nav>
+                        </div>
+                        <div class="mt-4">
+                            <pre id="code-js" class="code-snippet p-4 rounded-md overflow-x-auto"><code>function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let key = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+    arr[j + 1] = key;
+  }
+  return arr;
+}</code></pre>
+                            <pre id="code-python" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>def insertion_sort(arr):
+  for i in range(1, len(arr)):
+    key = arr[i]
+    j = i - 1
+    while j >= 0 and key < arr[j]:
+      arr[j + 1] = arr[j]
+      j -= 1
+    arr[j + 1] = key
+  return arr</code></pre>
+                            <pre id="code-java" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>void insertionSort(int arr[]) {
+  int n = arr.length;
+  for (int i = 1; i < n; ++i) {
+    int key = arr[i];
+    int j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+    arr[j + 1] = key;
+  }
+}</code></pre>
+                            <pre id="code-cpp" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>void insertionSort(int arr[], int n) {
+  for (int i = 1; i < n; i++) {
+    int key = arr[i];
+    int j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+    arr[j + 1] = key;
+  }
+}</code></pre>
+                            <pre id="code-c" class="code-snippet p-4 rounded-md overflow-x-auto hidden"><code>void insertionSort(int arr[], int n) {
+  int i, key, j;
+  for (i = 1; i < n; i++) {
+    key = arr[i];
+    j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+    arr[j + 1] = key;
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-xl flex flex-col animate-fade-in" style="animation-delay: 0.4s;">
+                 <h2 class="text-2xl font-bold mb-2 text-center text-blue-600 flex items-center justify-center gap-2">Game: Insertion Place! <span class="animate-tada inline-block">📍</span></h2>
+                <p class="text-center text-gray-500 mb-4">Click the correct slot (blue) to insert the key (yellow).</p>
+                
+                <div id="game-board-container" class="flex-grow bg-gray-50 rounded-lg p-4 relative min-h-[300px] md:min-h-[400px]">
+                    <div id="game-board" class="flex items-center justify-center gap-2 md:gap-4 h-full">
+                        <!-- Array blocks go here -->
+                    </div>
+                    <div id="win-message" class="absolute inset-0 bg-green-500/80 rounded-lg flex items-center justify-center text-white text-center p-4 text-2xl font-bold opacity-0 transition-opacity duration-500 pointer-events-none">
+                        Array Sorted! Perfect! 🎉
+                    </div>
+                </div>
+                
+                 <div id="status-message" class="text-center h-8 my-4 font-semibold text-lg text-gray-700 transition-all duration-300"></div>
+
+                <div class="grid grid-cols-2 gap-4 mt-auto">
+                    <button id="hint-btn" class="justify-center col-span-1 bg-transparent border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"><span class="material-icons-outlined">lightbulb</span> Hint</button>
+                    <button id="reset-btn" class="justify-center col-span-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"><span class="material-icons-outlined">restart_alt</span> Reset</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12">
+            <a href="selection_sort_game.html" class="w-40 justify-center bg-transparent border-2 border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                <span class="material-icons-outlined">arrow_back</span> Previous
+            </a>
+            <a href="#" class="w-40 justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2 border-2 border-blue-500 hover:border-blue-600">
+                Next <span class="material-icons-outlined">arrow_forward</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="w-full py-4 bg-white mt-8 border-t border-gray-200">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            <p>&copy; 2025 The DSA Game by Pritish Rajpurohit. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TABS LOGIC ---
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.querySelectorAll('.code-snippet').forEach(snip => {
+                       snip.classList.add('hidden');
+                    });
+                    document.getElementById(`code-${tab.dataset.lang}`).classList.remove('hidden');
+                });
+            });
+
+            // --- GAME LOGIC ---
+            const gameBoard = document.getElementById('game-board');
+            const hintBtn = document.getElementById('hint-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const statusMessage = document.getElementById('status-message');
+            const winMessage = document.getElementById('win-message');
+
+            const ARRAY_SIZE = 6;
+            let gameArray = [];
+            let passIndex = 1; // Start with the second element as the first key
+            let isGameOver = false;
+            let isAnimating = false;
+
+            function initGame() {
+                const uniqueValues = new Set();
+                while (uniqueValues.size < ARRAY_SIZE) {
+                    uniqueValues.add(Math.floor(Math.random() * 90) + 10);
+                }
+                gameArray = Array.from(uniqueValues);
+                
+                passIndex = 1;
+                isGameOver = false;
+                isAnimating = false;
+                winMessage.style.opacity = '0';
+                statusMessage.textContent = "Click the correct blue slot to insert the key.";
+                renderArray();
+            }
+
+            function renderArray() {
+                gameBoard.innerHTML = '';
+                const key = gameArray[passIndex];
+                
+                // Render sorted part
+                for (let i = 0; i < passIndex; i++) {
+                    gameBoard.appendChild(createBlock(gameArray[i], i, 'sorted'));
+                }
+
+                // Render key element separately for animation
+                const keyBlock = createBlock(key, passIndex, 'key-element');
+                gameBoard.appendChild(keyBlock);
+
+                // Render unsorted part
+                for (let i = passIndex + 1; i < gameArray.length; i++) {
+                     gameBoard.appendChild(createBlock(gameArray[i], i, ''));
+                }
+                
+                if(!isGameOver){
+                    highlightTargetSlots();
+                }
+            }
+            
+            function createBlock(value, index, typeClass) {
+                 const block = document.createElement('div');
+                 block.textContent = value;
+                 block.className = `array-block w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-2xl font-bold bg-gray-200 rounded-lg border-2 border-gray-300 ${typeClass}`;
+                 block.dataset.index = index;
+                 return block;
+            }
+
+            function highlightTargetSlots() {
+                const correctIndex = findCorrectInsertionIndex();
+                // Create placeholder slots where insertion is possible
+                for (let i = 0; i <= passIndex; i++) {
+                    const slot = document.createElement('div');
+                    slot.className = 'target-slot w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 border-dashed';
+                    slot.dataset.insertIndex = i;
+                    slot.addEventListener('click', () => handleSlotClick(i, correctIndex));
+                    
+                    if(i < passIndex){
+                        const block = document.querySelector(`[data-index='${i}']`);
+                        block.parentNode.insertBefore(slot, block);
+                    } else {
+                         gameBoard.insertBefore(slot, document.querySelector('.key-element').nextSibling);
+                    }
+                }
+            }
+            
+            function findCorrectInsertionIndex() {
+                const key = gameArray[passIndex];
+                let correctIndex = 0;
+                while(correctIndex < passIndex && gameArray[correctIndex] < key) {
+                    correctIndex++;
+                }
+                return correctIndex;
+            }
+
+            function handleSlotClick(clickedIndex, correctIndex) {
+                 if (isAnimating || isGameOver) return;
+                 const clickedSlot = document.querySelector(`[data-insert-index='${clickedIndex}']`);
+
+                 if(clickedIndex === correctIndex) {
+                    isAnimating = true;
+                    statusMessage.textContent = 'Correct! Inserting element...';
+                    
+                    const key = gameArray.splice(passIndex, 1)[0];
+                    gameArray.splice(clickedIndex, 0, key);
+                    
+                    passIndex++;
+                    
+                    setTimeout(() => {
+                        renderArray(); // Re-render without slots first
+                        if(passIndex >= gameArray.length) {
+                            finishGame();
+                        } else {
+                            isAnimating = false;
+                            statusMessage.textContent = 'Great! Pick the next insertion spot.';
+                            renderArray(); // Re-render with new slots and key
+                        }
+                    }, 500);
+
+                 } else {
+                    statusMessage.textContent = 'Not the right spot! Try again.';
+                    clickedSlot.classList.add('incorrect');
+                    setTimeout(() => {
+                        clickedSlot.classList.remove('incorrect');
+                    }, 500);
+                 }
+            }
+
+            function finishGame() {
+                isGameOver = true;
+                winMessage.style.opacity = '1';
+                statusMessage.textContent = "Array is fully sorted!";
+                gameBoard.innerHTML = '';
+                gameArray.forEach((val, idx) => {
+                     gameBoard.appendChild(createBlock(val, idx, 'sorted'));
+                });
+            }
+
+            function showHint() {
+                 if (isGameOver) return;
+                 const correctIndex = findCorrectInsertionIndex();
+                 const hintSlot = document.querySelector(`[data-insert-index='${correctIndex}']`);
+                 if(hintSlot) {
+                     hintSlot.classList.add('selected-min');
+                 }
+                 statusMessage.textContent = `Hint: The key should be inserted at this position.`;
+            }
+
+            resetBtn.addEventListener('click', initGame);
+            hintBtn.addEventListener('click', showHint);
+
+            initGame();
+        });
+    </script>
+</body>
+</html>
